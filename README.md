@@ -10,10 +10,11 @@ https://www.kaggle.com/datasets/carogonzalezgaltier/medical-appointment-scheduli
 
 ---
 **Pre-processing techniques**
-[ ] handling categorical data
-[ ] handling missing data
-[ ] handling noisy data
-[ ] perform EDA (Exploratory Data analysis) for dataset
+
+- [ ] handling categorical data
+- [ ] handling missing data
+- [ ] handling noisy data
+- [ ] perform EDA (Exploratory Data analysis) for dataset
 
 ---
 **Further Analysis - Regression or classification**
