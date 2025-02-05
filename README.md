@@ -1,4 +1,4 @@
-# Data-Mining-and-Decision-Tree-Algorithms
+# Data Mining and Descision Tree Algorithms
 **Working with Patient appointment request dataset:**
 
 https://www.kaggle.com/datasets/carogonzalezgaltier/medical-appointment-scheduling-system
