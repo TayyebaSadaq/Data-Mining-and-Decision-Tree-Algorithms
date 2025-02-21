@@ -15,18 +15,6 @@ data = pd.read_csv('data/appointments.csv')
 
 ## CHECK FOR NULL VALUES
 is_null = data.isnull().sum()
-# print(is_null) # some null values
-
-## STATISTICAL ANALYSIS
-# mean, standard deviation, count, min, 25%, 50%, 75% and max values for each column
-stat_analysis = data.describe()
-# print(stat_analysis)
-
-## CHECK OUTLIERS
-fig, axs = plt.subplots(16,1,dpi=95, figsize=(7,17))
-i = 0
-for col in data.columns:
-    axs[i].boxplot(data[col], vert=False)
-    axs[i].set_ylabel(col)
-    i+=1
-plt.show
+print(is_null) # some null values - for now we leave them since they're there for unattended/cancelled appointments so they're needed
+# check if attended appointment has null values - so we can drop them
+print(data[data['status'] == 'No'].isnull().sum())
