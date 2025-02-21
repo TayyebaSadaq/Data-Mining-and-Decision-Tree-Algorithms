@@ -36,6 +36,14 @@ Regression would be used if we were predicting a continuous value, like the numb
     
     For this, status and sex will be converted to numerical values in order to be used for analysis and model building. Male = 0, Female = 1. Since status has more than 2 values, i'll be hot encoding it. creating new columns for each value and assigning 1 or 0 based on the value in the original column.
 
+    <ins> removing male and female and replacing them with 0 and 1:</ins>
+
+    ![replacing male and female with 0 and 1](images/image4.png)
+
+    <ins> hot encoding the status column:</ins>
+
+    ![hot encoding the status column](images/image5.png)
+    
 4. __Removing noisy/irrelevant data__
 
     TBD yet - will be done after further analysis
