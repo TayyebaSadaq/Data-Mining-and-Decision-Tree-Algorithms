@@ -34,13 +34,26 @@ data['sex'] = label_encoder.fit_transform(data['sex'])
 data = pd.get_dummies(data, columns=['status'], drop_first=True)
 print(data.head())
 
-## Boxplot for outlier detection
-# fig, axs = plt.subplots(len(data.select_dtypes(include=[np.number]).columns), 1, dpi=95, figsize=(7, 17))
-# fig.suptitle('Boxplots for Outlier Detection', fontsize=16)
-# i = 0
-# for col in data.select_dtypes(include=[np.number]).columns:
-#     axs[i].boxplot(data[col].dropna(), vert=False)  # Drop NA values for plotting
-#     axs[i].set_ylabel(col)
-#     i += 1
-# plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Adjust layout to fit title
-# plt.show()
+## HISTOGRAMS
+data.hist(bins=30, figsize=(15, 10))
+plt.suptitle('Histograms of Numerical Columns', fontsize=16)
+plt.show()
+
+## BOX PLOTS
+fig, axs = plt.subplots(len(data.select_dtypes(include=[np.number]).columns), 1, dpi=95, figsize=(7, 17))
+fig.suptitle('Boxplots for Outlier Detection', fontsize=16)
+i = 0
+for col in data.select_dtypes(include=[np.number]).columns:
+    axs[i].boxplot(data[col].dropna(), vert=False)  # Drop NA values for plotting
+    axs[i].set_ylabel(col)
+    i += 1
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Adjust layout to fit title
+plt.show()
+
+## CORRELATION MATRIX
+numeric_data = data.select_dtypes(include=[np.number])
+corr_matrix = numeric_data.corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Matrix', fontsize=16)
+plt.show()
