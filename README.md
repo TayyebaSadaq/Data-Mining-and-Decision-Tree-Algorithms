@@ -42,7 +42,7 @@ Regression would be used if we were predicting a continuous value, like the numb
 
     <ins> hot encoding the status column:</ins>
 
-    Made column for each status type to then have numerical representation of whether it applied to the appointment and any null values for the appointment times etc upon cancellation/non attend is changeed to 0
+    Made column for each status type to then have numerical representation of whether it applied to the appointment - need to handle the null values for non-attended appointments.
     ![hot encoding the status column](images/image5.png)
     
 4. __Removing noisy/irrelevant data__

@@ -19,9 +19,10 @@ is_null = data.isnull().sum()
 ## check if attended appointment has null values - so we can drop them
 # print(data[data['status'] == 'No'].isnull().sum())
 
+# Commented out the part that fills NaN values
 # Fill NaN values for specific columns when the appointment was cancelled or not attended
-columns_to_fill = ['check_in_time', 'appointment_duration', 'start_time', 'end_time', 'waiting_time']
-data[columns_to_fill] = data[columns_to_fill].fillna(0)  # Fill with 0 or any other placeholder value
+# columns_to_fill = ['check_in_time', 'appointment_duration', 'start_time', 'end_time', 'waiting_time']
+# data[columns_to_fill] = data[columns_to_fill].fillna(0)  # Fill with 0 or any other placeholder value
 
 print(data.head())
 
@@ -31,7 +32,7 @@ label_encoder = LabelEncoder()
 data['sex'] = label_encoder.fit_transform(data['sex'])
 # print(data.head())
 ## hot encoding the 'status' column
-data = pd.get_dummies(data, columns=['status'], drop_first=True)
+data = pd.get_dummies(data, columns=['status'], drop_first=False)
 print(data.head())
 
 ## HISTOGRAMS
