@@ -52,8 +52,11 @@ Regression would be used if we were predicting a continuous value, like the numb
 
     This is to get a better understanding of the data and see if there are any patters or trends to be observed. This will be done using: 
 
-    a. Histograms
+    a. Histogram - for distribution of data
+    ![histogram](images/histograms.png)
 
     b. Boxplots - for outliers
+    ![boxplot](images/boxplot.png)
 
-    c. Correlation matrix
+    c. Correlation matrix - to see how the features are related to each other
+    ![correlation matric](images/correlationmatrix.png)
