@@ -1,10 +1,10 @@
 # IMPORTS
 import pandas as pd
-import scipy
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import mstats
 
 ## LOAD DATASET
 data = pd.read_csv('data/appointments.csv')
@@ -19,13 +19,6 @@ is_null = data.isnull().sum()
 ## check if attended appointment has null values - so we can drop them
 # print(data[data['status'] == 'No'].isnull().sum())
 
-# Commented out the part that fills NaN values
-# Fill NaN values for specific columns when the appointment was cancelled or not attended
-# columns_to_fill = ['check_in_time', 'appointment_duration', 'start_time', 'end_time', 'waiting_time']
-# data[columns_to_fill] = data[columns_to_fill].fillna(0)  # Fill with 0 or any other placeholder value
-
-print(data.head())
-
 ## CONVERTING CATEGORICAL DATA TO NUMERICAL
 ## first handle the 'sex' column since it's just 1 and 0 (male and female)
 label_encoder = LabelEncoder()
@@ -35,14 +28,29 @@ data['sex'] = label_encoder.fit_transform(data['sex'])
 data = pd.get_dummies(data, columns=['status'], drop_first=False)
 print(data.head())
 
-## HISTOGRAMS
-data.hist(bins=30, figsize=(15, 10))
-plt.suptitle('Histograms of Numerical Columns', fontsize=16)
-plt.show()
+## HANDLING OUTLIERS
 
+# Waiting Time
+# Winsorize to cap extreme values at the 1st and 99th percentiles
+data['waiting_time'] = mstats.winsorize(data['waiting_time'], limits=[0.01, 0.01])
+# Categorize waiting times into bins
+data['waiting_time_category'] = pd.cut(data['waiting_time'], bins=[-1, 5, 15, np.inf], labels=['Short', 'Moderate', 'Long'])
+
+# Appointment Duration
+data['unusually_short_appointment'] = np.where(data['appointment_duration'] < 5, 1, 0)
+data['appointment_duration'] = np.where(data['appointment_duration'] == 0, data['appointment_duration'].median(), data['appointment_duration'])
+data['appointment_duration'] = np.log1p(data['appointment_duration'])  # Apply log transformation
+
+# Scheduling Interval
+data['scheduling_interval'] = mstats.winsorize(data['scheduling_interval'], limits=[0.01, 0.01])
+data['scheduling_interval_category'] = pd.cut(data['scheduling_interval'], bins=[-1, 0, 7, 30, np.inf], labels=['Same-day', '1 week', '1 month+', 'Long-term'])
+
+print(data.head())
+
+## VISUALISATIONS AFTER HANDLING OUTLIERS
 ## BOX PLOTS
 fig, axs = plt.subplots(len(data.select_dtypes(include=[np.number]).columns), 1, dpi=95, figsize=(7, 17))
-fig.suptitle('Boxplots for Outlier Detection', fontsize=16)
+fig.suptitle('Boxplots for Outlier Detection After Handling', fontsize=16)
 i = 0
 for col in data.select_dtypes(include=[np.number]).columns:
     axs[i].boxplot(data[col].dropna(), vert=False)  # Drop NA values for plotting
