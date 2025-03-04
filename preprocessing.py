@@ -60,4 +60,33 @@ plt.show()
 # ## Final check - pregnancies and outcome can be 0 but the others are handled
 # print(data.isnull().sum())
 
+## REMOVING OUTLIERS
+# check outliers for pregnancies, bmi, insulin, blood pressure
+fig, axs = plt.subplots(8, 1, dpi = 95, figsize = (7,17))
+i = 0
+for col in ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age']:
+    axs[i].boxplot(data[col], vert = False)
+    axs[i].set_ylabel(col)
+    i += 1
+plt.show()
 
+# Function to remove outliers based on IQR
+def remove_outliers(df, columns):
+    for col in columns:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+    return df
+
+data = remove_outliers(data, ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age'])
+## visualize the data after removing outliers   
+fig, axs = plt.subplots(8, 1, dpi = 95, figsize = (7,17))
+i = 0
+for col in ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age']:
+    axs[i].boxplot(data[col], vert = False)
+    axs[i].set_ylabel(col)
+    i += 1
+plt.show()
