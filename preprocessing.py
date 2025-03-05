@@ -10,9 +10,9 @@ import scipy as sp
 data = pd.read_csv('data/diabetes.csv')
 
 ## inspect data
-print(data.head())
-data.info()
-print(data.describe())
+# print(data.head())
+# data.info()
+# print(data.describe())
 
 ## check for missing values
 # print(data.isnull().sum())
@@ -36,7 +36,7 @@ for i, col in enumerate(columns_to_plot, 1):
     plt.xlabel(col)
     plt.ylabel('Frequency')
 plt.tight_layout()
-plt.show()
+# plt.show()
 # Boxplots
 plt.figure(figsize=(20, 15))
 for i, col in enumerate(columns_to_plot, 1):
@@ -45,48 +45,50 @@ for i, col in enumerate(columns_to_plot, 1):
     plt.title(f'Boxplot of {col}')
     plt.xlabel(col)
 plt.tight_layout()
-plt.show()
+# plt.show()
+zero_values = (data == 0).sum()
+# print("Count of 0 values in each column:")
+# print(zero_values)
 
 ## handling missing values
-## Dropping rows where Glucose and BMI are 0 (since there's not many of them)
-# data = data.drop(data[data['Glucose'] == 0].index)
-# data = data.drop(data[data['BMI'] == 0].index)
+# Replacing 0 values in skewed data with median
+skewed_columns = ['Insulin', 'DiabetesPedigreeFunction', 'SkinThickness']
+for col in skewed_columns:
+    data[col] = data[col].replace(0, data[col].median())
 
-# ## Replacing 0 values in BloodPressure, SkinThickness, and Insulin with their median
-# data['BloodPressure'] = data['BloodPressure'].replace(0, data['BloodPressure'].median())
-# data['SkinThickness'] = data['SkinThickness'].replace(0, data['SkinThickness'].median())
-# data['Insulin'] = data['Insulin'].replace(0, data['Insulin'].median())
+# Replacing 0 values in normally distributed data with mean
+normal_columns = ['BloodPressure', 'Glucose', 'BMI']
+for col in normal_columns:
+    data[col] = data[col].replace(0, data[col].mean())
 
-# ## Final check - pregnancies and outcome can be 0 but the others are handled
-# print(data.isnull().sum())
+# Final check - pregnancies and outcome can be 0 but the others are handled
+zero_values = (data == 0).sum()
+print("Count of 0 values in each column:")
+print(zero_values)
 
-## REMOVING OUTLIERS
-# # check outliers for pregnancies, bmi, insulin, blood pressure
-# fig, axs = plt.subplots(8, 1, dpi = 95, figsize = (7,17))
-# i = 0
-# for col in ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age']:
-#     axs[i].boxplot(data[col], vert = False)
-#     axs[i].set_ylabel(col)
-#     i += 1
-# plt.show()
+## handling outliers for each feature
+# Glucose: Cap values at 1st and 99th percentiles (Winsorization)
+data["Glucose"] = data["Glucose"].clip(data["Glucose"].quantile(0.01), data["Glucose"].quantile(0.99))
 
-# # Function to remove outliers based on IQR
-# def remove_outliers(df, columns):
-#     for col in columns:
-#         Q1 = df[col].quantile(0.25)
-#         Q3 = df[col].quantile(0.75)
-#         IQR = Q3 - Q1
-#         lower_bound = Q1 - 1.5 * IQR
-#         upper_bound = Q3 + 1.5 * IQR
-#         df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
-#     return df
+# Blood Pressure: Replace 0 values with the median and cap extreme outliers
+data["BloodPressure"] = data["BloodPressure"].replace(0, data["BloodPressure"].median())
+data["BloodPressure"] = data["BloodPressure"].clip(data["BloodPressure"].quantile(0.01), data["BloodPressure"].quantile(0.99))
 
-# data = remove_outliers(data, ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age'])
-# ## visualize the data after removing outliers   
-# fig, axs = plt.subplots(8, 1, dpi = 95, figsize = (7,17))
-# i = 0
-# for col in ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age']:
-#     axs[i].boxplot(data[col], vert = False)
-#     axs[i].set_ylabel(col)
-#     i += 1
-# plt.show()
+# Skin Thickness: Cap extreme values at the 99th percentile
+data["SkinThickness"] = data["SkinThickness"].clip(data["SkinThickness"].quantile(0.01), data["SkinThickness"].quantile(0.99))
+
+# Insulin: Use log transformation to reduce skewness
+data["Insulin"] = np.log1p(data["Insulin"])
+
+# BMI: Winsorization to cap extreme values
+data["BMI"] = data["BMI"].clip(data["BMI"].quantile(0.01), data["BMI"].quantile(0.99))
+
+# Diabetes Pedigree Function (DPF): Log transform to reduce the impact of large values
+data["DiabetesPedigreeFunction"] = np.log1p(data["DiabetesPedigreeFunction"])
+
+# Check for any more outliers for each feature
+outliers = {}
+for col in columns_to_plot:
+    outliers[col] = detect_outliers_iqr(data, col)
+    print(f"Outliers in {col}:")
+    print(outliers[col])
