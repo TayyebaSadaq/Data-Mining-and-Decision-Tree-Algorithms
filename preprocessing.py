@@ -25,30 +25,32 @@ categorical_columns = [col for col in data.columns if data[col].dtype == 'object
 numerical_columns = [col for col in data.columns if data[col].dtype != 'object']
 # print("Numerical Columns: ", numerical_columns)
 
-## checking distribution - histograms and boxplots
 columns_to_plot = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
-# Histograms
-plt.figure(figsize=(20, 15))
-for i, col in enumerate(columns_to_plot, 1):
-    plt.subplot(4, 2, i)
-    sns.histplot(data[col], kde=True)
-    plt.title(f'Histogram of {col}')
-    plt.xlabel(col)
-    plt.ylabel('Frequency')
-plt.tight_layout()
-# plt.show()
-# Boxplots
-plt.figure(figsize=(20, 15))
-for i, col in enumerate(columns_to_plot, 1):
-    plt.subplot(4, 2, i)
-    sns.boxplot(x=data[col])
-    plt.title(f'Boxplot of {col}')
-    plt.xlabel(col)
-plt.tight_layout()
-# plt.show()
-zero_values = (data == 0).sum()
-# print("Count of 0 values in each column:")
-# print(zero_values)
+
+def plot_histograms(data, columns):
+    plt.figure(figsize=(20, 15))
+    for i, col in enumerate(columns, 1):
+        plt.subplot(4, 2, i)
+        sns.histplot(data[col], kde=True)
+        plt.title(f'Histogram of {col}')
+        plt.xlabel(col)
+        plt.ylabel('Frequency')
+    plt.tight_layout()
+    plt.show()
+
+def plot_boxplots(data, columns):
+    plt.figure(figsize=(20, 15))
+    for i, col in enumerate(columns, 1):
+        plt.subplot(4, 2, i)
+        sns.boxplot(x=data[col])
+        plt.title(f'Boxplot of {col}')
+        plt.xlabel(col)
+    plt.tight_layout()
+    plt.show()
+
+# Plot histograms and boxplots before any processing
+plot_histograms(data, columns_to_plot)
+plot_boxplots(data, columns_to_plot)
 
 ## handling missing values
 # Replacing 0 values in skewed data with median
@@ -60,6 +62,10 @@ for col in skewed_columns:
 normal_columns = ['BloodPressure', 'Glucose', 'BMI']
 for col in normal_columns:
     data[col] = data[col].replace(0, data[col].mean())
+
+# Plot histograms and boxplots after handling missing values
+plot_histograms(data, columns_to_plot)
+plot_boxplots(data, columns_to_plot)
 
 # Final check - pregnancies and outcome can be 0 but the others are handled
 zero_values = (data == 0).sum()
@@ -86,9 +92,6 @@ data["BMI"] = data["BMI"].clip(data["BMI"].quantile(0.01), data["BMI"].quantile(
 # Diabetes Pedigree Function (DPF): Log transform to reduce the impact of large values
 data["DiabetesPedigreeFunction"] = np.log1p(data["DiabetesPedigreeFunction"])
 
-# Check for any more outliers for each feature
-outliers = {}
-for col in columns_to_plot:
-    outliers[col] = detect_outliers_iqr(data, col)
-    print(f"Outliers in {col}:")
-    print(outliers[col])
+# Plot histograms and boxplots after handling outliers
+plot_histograms(data, columns_to_plot)
+plot_boxplots(data, columns_to_plot)
