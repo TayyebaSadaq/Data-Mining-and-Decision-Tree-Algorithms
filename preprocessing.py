@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import scipy as sp
 
@@ -95,3 +96,14 @@ data["DiabetesPedigreeFunction"] = np.log1p(data["DiabetesPedigreeFunction"])
 # Plot histograms and boxplots after handling outliers
 plot_histograms(data, columns_to_plot)
 plot_boxplots(data, columns_to_plot)
+
+# Split the data into train and test sets
+X = data.drop('Outcome', axis=1)
+y = data['Outcome']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Save the train and test sets to CSV files
+X_train.to_csv('data/X_train.csv', index=False)
+X_test.to_csv('data/X_test.csv', index=False)
+y_train.to_csv('data/y_train.csv', index=False)
+y_test.to_csv('data/y_test.csv', index=False)
