@@ -49,9 +49,19 @@ def plot_boxplots(data, columns):
     plt.tight_layout()
     plt.show()
 
+def plot_correlation_matrix(data):
+    plt.figure(figsize=(12, 10))
+    correlation_matrix = data.corr()
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+    plt.title('Correlation Matrix')
+    plt.show()
+
 # Plot histograms and boxplots before any processing
 plot_histograms(data, columns_to_plot)
 plot_boxplots(data, columns_to_plot)
+
+# Plot correlation matrix before any processing
+plot_correlation_matrix(data)
 
 ## handling missing values
 # Replacing 0 values in skewed data with median
@@ -96,6 +106,9 @@ data["DiabetesPedigreeFunction"] = np.log1p(data["DiabetesPedigreeFunction"])
 # Plot histograms and boxplots after handling outliers
 plot_histograms(data, columns_to_plot)
 plot_boxplots(data, columns_to_plot)
+
+# Plot correlation matrix after handling missing values and outliers
+plot_correlation_matrix(data)
 
 # Split the data into train and test sets
 X = data.drop('Outcome', axis=1)

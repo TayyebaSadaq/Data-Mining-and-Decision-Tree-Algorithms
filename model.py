@@ -83,6 +83,22 @@ print(f"Recall: {best_decision_tree_results[2]:.4f}")
 print(f"F1 Score: {best_decision_tree_results[3]:.4f}")
 print(f"ROC-AUC: {best_decision_tree_results[4]:.4f}")
 
+# Feature importance for Logistic Regression
+log_reg_coefficients = pd.DataFrame(log_reg.coef_.flatten(),
+                                    index=X_train.columns,
+                                    columns=['importance']).sort_values('importance', ascending=False)
+
+print("\nFeature Importances for Logistic Regression:")
+print(log_reg_coefficients)
+
+# Plot feature importances for Logistic Regression
+plt.figure(figsize=(10, 6))
+sns.barplot(x=log_reg_coefficients.importance, y=log_reg_coefficients.index)
+plt.title('Feature Importances for Logistic Regression')
+plt.xlabel('Importance')
+plt.ylabel('Feature')
+plt.show()
+
 # Feature importance for Decision Tree
 feature_importances = pd.DataFrame(best_decision_tree.feature_importances_,
                                    index=X_train.columns,
@@ -91,7 +107,7 @@ feature_importances = pd.DataFrame(best_decision_tree.feature_importances_,
 print("\nFeature Importances for Decision Tree:")
 print(feature_importances)
 
-# Plot feature importances
+# Plot feature importances for Decision Tree
 plt.figure(figsize=(10, 6))
 sns.barplot(x=feature_importances.importance, y=feature_importances.index)
 plt.title('Feature Importances for Decision Tree')
