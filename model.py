@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix, classification_report
 from sklearn.model_selection import cross_val_score, GridSearchCV
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -114,3 +114,24 @@ plt.title('Feature Importances for Decision Tree')
 plt.xlabel('Importance')
 plt.ylabel('Feature')
 plt.show()
+
+# Generate predictions for Logistic Regression
+log_reg_y_pred = log_reg.predict(X_test)
+print("\nConfusion Matrix for Logistic Regression:")
+print(confusion_matrix(y_test, log_reg_y_pred))
+print("\nClassification Report for Logistic Regression:")
+print(classification_report(y_test, log_reg_y_pred))
+
+# Generate predictions for Decision Tree
+decision_tree_y_pred = decision_tree.predict(X_test)
+print("\nConfusion Matrix for Decision Tree:")
+print(confusion_matrix(y_test, decision_tree_y_pred))
+print("\nClassification Report for Decision Tree:")
+print(classification_report(y_test, decision_tree_y_pred))
+
+# For the best Decision Tree model after hyperparameter tuning
+best_decision_tree_y_pred = best_decision_tree.predict(X_test)
+print("\nConfusion Matrix for Best Decision Tree:")
+print(confusion_matrix(y_test, best_decision_tree_y_pred))
+print("\nClassification Report for Best Decision Tree:")
+print(classification_report(y_test, best_decision_tree_y_pred))
